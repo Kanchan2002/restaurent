@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form_ele">
+        <label for="">Choose price</label>
+        <input type="text" id="fprice" class="form-control" placeholder="enter name" aria-label="price">
+        <label for="">Dishes</label>
+        <input type="text" id="fdish" class="form-control" placeholder="Description" aria-label="Dishes">
+        <label for="">choose table</label>
+        <select id="inputState" class="form-select">
+            <option value="1" selected>table1</option>
+            <option value="2">table2</option>
+            <option value="3">table3</option>
+        </select>
+        <button type="submit" id="bton" class="btn btn-danger">Add</button>
+
+    </form>
+    <div>
+        <h1>Order</h1>
+        <div>
+            <h2>Table1</h2>
+            <ul id="table1"></ul>
+        </div>
+        <div>
+            <h2>Table2</h2>
+            <ul id="table2"></ul>
+        </div>
+        <div>
+            <h2>Table3</h2>
+            <ul id="table3"></ul>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+        let formele = document.getElementById("form_ele");
+        formele.addEventListener("submit",(e)=>{
+            e.preventDefault();
+            let obj1 = {
+                price: document.getElementById("fprice").value,
+                Dishes: document.getElementById("fdish").value,
+                table_no: document.getElementById("inputState").value,
+            }
+            axios.post("https://crudcrud.com/api/13cd2ca376a24fd080985f411791d066/studentData",obj1)
+            .then((response)=>{
+                obj1.eleid = response.data._id;
+                console.log(obj1.eleid);
+                if (obj1.table_no == "1") {
+                let list_ele1 = document.getElementById("table1");
+                showcontent(obj1,list_ele1);
+                }
+                else if (obj1.table_no == "2") {
+                    let list_ele1 = document.getElementById("table2");
+                    showcontent(obj1,list_ele1);
+                }
+                else {
+                    let list_ele1 = document.getElementById("table3");
+                    showcontent(obj1,list_ele1);
+                }
+            })
+           
+        })
+        function showcontent(obj,list_ele){
+             let new_ele = document.createElement("li");
+             new_ele.innerHTML = `<p>${obj.price}-${obj.Dishes}-table nummber ${obj.table_no}</p>
+                                <button type="button" id="${obj.eleid}" class="btn btn-danger del">Delete</button>`
+            list_ele.append(new_ele);
+        }
+        function deleteuser(ele_id){
+             axios.delete(`https://crudcrud.com/api/13cd2ca376a24fd080985f411791d066/studentData/${ele_id}`)
+             .then((response)=>{
+                 console.log("hlw")
+             })
+           
+        }
+        document.addEventListener("click", (e) => {
+            if (e.target.classList.contains("del")) {
+                let get_parent = e.target.parentElement;
+                let eleId = e.target.getAttribute('id');
+                deleteuser(eleId);
+                get_parent.remove();
+            }
+            });
+       
+    
+    </script>
+</body>
+</html>
